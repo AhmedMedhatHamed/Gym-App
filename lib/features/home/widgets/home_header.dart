@@ -1,5 +1,8 @@
+import 'dart:typed_data';
+
 import 'package:gym_app/core/utils/app_colors.dart';
 import 'package:gym_app/core/utils/app_styles.dart';
+import 'package:gym_app/features/profile/model/profile_model.dart';
 import 'package:material_ui/material_ui.dart';
 
 class HomeHeader extends StatelessWidget {
@@ -9,13 +12,32 @@ class HomeHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Container(
-          width: 48.0,
-          height: 48.0,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(color: AppColors.textColor, width: 1.5),
-          ),
+        ValueListenableBuilder<Uint8List?>(
+          valueListenable: profileImageNotifier,
+          builder: (context, imageBytes, _) {
+            return Container(
+              width: 48.0,
+              height: 48.0,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: AppColors.textColor, width: 1.5),
+              ),
+              child: imageBytes != null
+                  ? ClipOval(
+                      child: Image.memory(
+                        imageBytes,
+                        width: 48.0,
+                        height: 48.0,
+                        fit: BoxFit.cover,
+                      ),
+                    )
+                  : const Icon(
+                      Icons.person_rounded,
+                      color: AppColors.primaryColor,
+                      size: 26.0,
+                    ),
+            );
+          },
         ),
         const SizedBox(width: 12.0),
         Column(

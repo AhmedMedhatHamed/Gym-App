@@ -1,4 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+
+final ValueNotifier<Uint8List?> profileImageNotifier =
+    ValueNotifier<Uint8List?>(null);
 
 class ProfileBadgeModel {
   final String title;

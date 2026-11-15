@@ -10,22 +10,24 @@ class ProfileBadgesSection extends StatelessWidget {
     this.badges = profileBadges,
     required this.selectedIndex,
     required this.onSelect,
-    this.totalBadgesCount = 5,
+    this.totalBadgesCount,
   });
 
   final double scale;
   final List<ProfileBadgeModel> badges;
   final int selectedIndex;
   final ValueChanged<int> onSelect;
-  final int totalBadgesCount;
+  final int? totalBadgesCount;
 
   @override
   Widget build(BuildContext context) {
+    final int displayCount = totalBadgesCount ?? badges.length;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'الأوسمة والشارات ($totalBadgesCount)',
+          'الأوسمة والشارات ($displayCount)',
           style: AppStyles.noto700Size28.copyWith(
             fontSize: 17.0 * scale,
             fontWeight: FontWeight.bold,

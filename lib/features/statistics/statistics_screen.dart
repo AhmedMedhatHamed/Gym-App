@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gym_app/core/routes/app_routing.dart';
 import 'package:gym_app/core/utils/app_colors.dart';
 import 'package:gym_app/features/statistics/model/statistics_model.dart';
-import 'package:gym_app/features/statistics/widgets/statistics_bottom_nav_bar.dart';
+import 'package:gym_app/core/widgets/custom_bottom_nav_bar.dart';
 import 'package:gym_app/features/statistics/widgets/statistics_header.dart';
 import 'package:gym_app/features/statistics/widgets/statistics_heart_rate_card.dart';
 import 'package:gym_app/features/statistics/widgets/statistics_period_tabs.dart';
@@ -78,16 +78,18 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                 ),
               ),
             ),
-            bottomNavigationBar: StatisticsBottomNavBar(
-              scale: scale,
-              selectedIndex: _selectedNavIndex,
-              onSelect: (index) {
-                AppRouter.navigateByNavIndex(
-                  context,
-                  currentIndex: _selectedNavIndex,
-                  targetIndex: index,
-                );
-              },
+            bottomNavigationBar: Padding(
+              padding: const EdgeInsets.fromLTRB(20.0, 8.0, 20.0, 16.0),
+              child: CustomBottomNavBar(
+                currentIndex: _selectedNavIndex,
+                onTap: (index) {
+                  AppRouter.navigateByNavIndex(
+                    context,
+                    currentIndex: _selectedNavIndex,
+                    targetIndex: index,
+                  );
+                },
+              ),
             ),
           );
         },

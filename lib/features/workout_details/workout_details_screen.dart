@@ -117,6 +117,7 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
                     slivers: [
                       SliverToBoxAdapter(
                         child: WorkoutVideoPreview(
+                          videoPath: workout.videoPath,
                           imagePath: coverImage,
                           onPlayPressed: () {
                             if (workout.exercises.isNotEmpty) {
@@ -172,13 +173,13 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
           ),
         ),
         bottomNavigationBar: Padding(
-          padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 16.0),
+          padding: const EdgeInsets.fromLTRB(20.0, 8.0, 20.0, 16.0),
           child: CustomBottomNavBar(
             currentIndex: currentNavIndex,
             onTap: (index) {
               AppRouter.navigateByNavIndex(
                 context,
-                currentIndex: currentNavIndex,
+                currentIndex: -1,
                 targetIndex: index,
               );
             },
