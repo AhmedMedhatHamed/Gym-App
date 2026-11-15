@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:gym_app/core/utils/app_colors.dart';
 import 'package:gym_app/core/utils/app_styles.dart';
+import 'package:gym_app/features/profile/model/profile_model.dart';
 
 class ProfileWorkoutLogSection extends StatelessWidget {
   const ProfileWorkoutLogSection({
     super.key,
     required this.scale,
-    required this.workouts,
+    this.workouts = profileWorkoutLogs,
   });
 
   final double scale;
-  final List<Map<String, dynamic>> workouts;
+  final List<ProfileWorkoutLogModel> workouts;
 
   @override
   Widget build(BuildContext context) {
@@ -47,12 +48,12 @@ class ProfileWorkoutLogSection extends StatelessWidget {
                     width: 48.0 * scale,
                     height: 48.0 * scale,
                     decoration: BoxDecoration(
-                      color: workout['boxColor'] as Color,
+                      color: workout.boxColor,
                       borderRadius: BorderRadius.circular(14.0 * scale),
                     ),
                     child: Center(
                       child: Text(
-                        workout['emoji'] as String,
+                        workout.emoji,
                         style: TextStyle(fontSize: 22.0 * scale),
                       ),
                     ),
@@ -63,7 +64,7 @@ class ProfileWorkoutLogSection extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          workout['title'] as String,
+                          workout.title,
                           style: AppStyles.noto700Size28.copyWith(
                             fontSize: 15.0 * scale,
                             fontWeight: FontWeight.bold,
@@ -71,7 +72,7 @@ class ProfileWorkoutLogSection extends StatelessWidget {
                         ),
                         SizedBox(height: 4.0 * scale),
                         Text(
-                          workout['subtitle'] as String,
+                          workout.subtitle,
                           style: AppStyles.noto400Size15.copyWith(
                             fontSize: 12.5 * scale,
                             color: AppColors.textColor,

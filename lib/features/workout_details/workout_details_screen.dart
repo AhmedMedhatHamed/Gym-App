@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:gym_app/core/routes/app_routing.dart';
 import 'package:gym_app/core/utils/app_colors.dart';
 import 'package:gym_app/core/utils/app_styles.dart';
 import 'package:gym_app/core/widgets/custom_bottom_nav_bar.dart';
@@ -24,7 +25,7 @@ class WorkoutDetailsScreen extends StatefulWidget {
 }
 
 class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
-  int currentNavIndex = 2;
+  static const int currentNavIndex = 2;
   int? selectedExerciseIndex;
   int? pausedExerciseIndex;
   int remainingSeconds = 0;
@@ -175,9 +176,11 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
           child: CustomBottomNavBar(
             currentIndex: currentNavIndex,
             onTap: (index) {
-              setState(() {
-                currentNavIndex = index;
-              });
+              AppRouter.navigateByNavIndex(
+                context,
+                currentIndex: currentNavIndex,
+                targetIndex: index,
+              );
             },
           ),
         ),

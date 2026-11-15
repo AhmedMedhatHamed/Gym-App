@@ -9,7 +9,9 @@ import 'package:gym_app/features/auth/signup/signup_screen.dart';
 import 'package:gym_app/features/home/home_screen.dart';
 import 'package:gym_app/features/home/model/workout_program_model.dart';
 import 'package:gym_app/features/onboarding/onboarding_screen.dart';
+import 'package:gym_app/features/profile/profile_screen.dart';
 import 'package:gym_app/features/splash/splash_screen.dart';
+import 'package:gym_app/features/statistics/statistics_screen.dart';
 import 'package:gym_app/features/workout_details/model/workout_details_model.dart';
 import 'package:gym_app/features/workout_details/workout_details_screen.dart';
 import 'package:material_ui/material_ui.dart';
@@ -60,7 +62,29 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => WorkoutDetailsScreen(workout: workout),
         );
+
+      case AppRoutes.profileScreen:
+        return MaterialPageRoute(builder: (_) => const ProfileScreen());
+
+      case AppRoutes.statisticsScreen:
+        return MaterialPageRoute(builder: (_) => const StatisticsScreen());
     }
     return null;
+  }
+
+  static void navigateByNavIndex(
+    BuildContext context, {
+    required int currentIndex,
+    required int targetIndex,
+  }) {
+    if (targetIndex == currentIndex) return;
+    switch (targetIndex) {
+      case 0:
+        Navigator.pushReplacementNamed(context, AppRoutes.profileScreen);
+      case 1:
+        Navigator.pushReplacementNamed(context, AppRoutes.statisticsScreen);
+      case 2:
+        Navigator.pushReplacementNamed(context, AppRoutes.homeScreen);
+    }
   }
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gym_app/core/datasource/firebase_data_source.dart';
 import 'package:gym_app/core/routes/app_routes.dart';
+import 'package:gym_app/core/routes/app_routing.dart';
 import 'package:gym_app/core/utils/app_colors.dart';
+import 'package:gym_app/features/profile/model/profile_model.dart';
 import 'package:gym_app/features/profile/widgets/profile_badges_section.dart';
 import 'package:gym_app/features/profile/widgets/profile_bottom_nav_bar.dart';
 import 'package:gym_app/features/profile/widgets/profile_header.dart';
@@ -17,41 +19,8 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  int _selectedNavIndex = 0;
+  static const int _selectedNavIndex = 0;
   int _selectedBadgeIndex = 0;
-
-  static const List<Map<String, dynamic>> _badges = [
-    {
-      'title': 'حارق الدهون',
-      'emoji': '🔥',
-      'bgColor': Color(0xff2B2118),
-    },
-    {
-      'title': 'الالتزام 30 يوم',
-      'emoji': '⚡',
-      'bgColor': Color(0xff1A272D),
-    },
-    {
-      'title': 'بطل الأسبوع',
-      'emoji': '🏆',
-      'bgColor': Color(0xff292418),
-    },
-  ];
-
-  static const List<Map<String, dynamic>> _workouts = [
-    {
-      'title': 'تمرين الصدر والبنج',
-      'subtitle': 'أمس، 45 دقيقة • 320 سعرة',
-      'emoji': '💪',
-      'boxColor': Color(0xff2A2F1B),
-    },
-    {
-      'title': 'كارديو وحرق دهون',
-      'subtitle': 'منذ يومين، 30 دقيقة • 280 سعرة',
-      'emoji': '🏃',
-      'boxColor': Color(0xff182830),
-    },
-  ];
 
   double _calculateScale(BuildContext context, BoxConstraints constraints) {
     final double screenWidth = constraints.hasBoundedWidth
@@ -89,7 +58,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         SizedBox(height: 26.0 * scale),
                         ProfileBadgesSection(
                           scale: scale,
-                          badges: _badges,
+                          badges: profileBadges,
                           selectedIndex: _selectedBadgeIndex,
                           onSelect: (index) {
                             setState(() {
@@ -100,7 +69,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         SizedBox(height: 26.0 * scale),
                         ProfileWorkoutLogSection(
                           scale: scale,
-                          workouts: _workouts,
+                          workouts: profileWorkoutLogs,
                         ),
                         SizedBox(height: 20.0 * scale),
                         ProfileLogoutButton(
@@ -127,9 +96,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
               scale: scale,
               selectedIndex: _selectedNavIndex,
               onSelect: (index) {
-                setState(() {
-                  _selectedNavIndex = index;
-                });
+                AppRouter.navigateByNavIndex(
+                  context,
+                  currentIndex: _selectedNavIndex,
+                  targetIndex: index,
+                );
               },
             ),
           );

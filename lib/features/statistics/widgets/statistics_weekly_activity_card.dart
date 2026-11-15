@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:gym_app/core/utils/app_colors.dart';
 import 'package:gym_app/core/utils/app_styles.dart';
+import 'package:gym_app/features/statistics/model/statistics_model.dart';
 
 class StatisticsWeeklyActivityCard extends StatelessWidget {
   const StatisticsWeeklyActivityCard({
     super.key,
     required this.scale,
-    required this.days,
+    this.days = weeklyActivityDays,
     this.percentageText = '+18% عن السابق',
   });
 
   final double scale;
-  final List<Map<String, dynamic>> days;
+  final List<WeeklyActivityDayModel> days;
   final String percentageText;
 
   @override
@@ -58,9 +59,9 @@ class StatisticsWeeklyActivityCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: List.generate(days.length, (index) {
               final day = days[index];
-              final double factor = (day['factor'] as double).clamp(0.1, 1.0);
-              final Color barColor = day['color'] as Color;
-              final bool isHighlighted = day['highlighted'] as bool? ?? false;
+              final double factor = day.factor.clamp(0.1, 1.0);
+              final Color barColor = day.color;
+              final bool isHighlighted = day.isHighlighted;
 
               return Expanded(
                 child: Column(
@@ -84,7 +85,7 @@ class StatisticsWeeklyActivityCard extends StatelessWidget {
                     FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(
-                        day['label'] as String,
+                        day.label,
                         maxLines: 1,
                         style: TextStyle(
                           fontFamily: 'Noto',

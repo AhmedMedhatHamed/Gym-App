@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:gym_app/core/utils/app_colors.dart';
 import 'package:gym_app/core/utils/app_styles.dart';
+import 'package:gym_app/features/profile/model/profile_model.dart';
 
 class ProfileBadgesSection extends StatelessWidget {
   const ProfileBadgesSection({
     super.key,
     required this.scale,
-    required this.badges,
+    this.badges = profileBadges,
     required this.selectedIndex,
     required this.onSelect,
     this.totalBadgesCount = 5,
   });
 
   final double scale;
-  final List<Map<String, dynamic>> badges;
+  final List<ProfileBadgeModel> badges;
   final int selectedIndex;
   final ValueChanged<int> onSelect;
   final int totalBadgesCount;
@@ -69,11 +70,11 @@ class ProfileBadgesSection extends StatelessWidget {
                           height: 38.0 * scale,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: badge['bgColor'] as Color,
+                            color: badge.bgColor,
                           ),
                           child: Center(
                             child: Text(
-                              badge['emoji'] as String,
+                              badge.emoji,
                               style: TextStyle(fontSize: 20.0 * scale),
                             ),
                           ),
@@ -82,7 +83,7 @@ class ProfileBadgesSection extends StatelessWidget {
                         FittedBox(
                           fit: BoxFit.scaleDown,
                           child: Text(
-                            badge['title'] as String,
+                            badge.title,
                             textAlign: TextAlign.center,
                             maxLines: 1,
                             style: TextStyle(

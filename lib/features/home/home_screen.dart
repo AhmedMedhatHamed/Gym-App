@@ -1,3 +1,4 @@
+import 'package:gym_app/core/routes/app_routing.dart';
 import 'package:gym_app/core/utils/app_colors.dart';
 import 'package:gym_app/core/utils/app_styles.dart';
 import 'package:gym_app/core/widgets/custom_bottom_nav_bar.dart';
@@ -18,7 +19,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int currentNavIndex = 2;
+  static const int currentNavIndex = 2;
   String selectedCategory = workoutCategories.first;
 
   @override
@@ -125,9 +126,11 @@ class _HomeScreenState extends State<HomeScreen> {
             child: CustomBottomNavBar(
               currentIndex: currentNavIndex,
               onTap: (index) {
-                setState(() {
-                  currentNavIndex = index;
-                });
+                AppRouter.navigateByNavIndex(
+                  context,
+                  currentIndex: currentNavIndex,
+                  targetIndex: index,
+                );
               },
             ),
           ),

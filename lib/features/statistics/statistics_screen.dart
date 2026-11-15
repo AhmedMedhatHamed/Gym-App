@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gym_app/core/routes/app_routing.dart';
 import 'package:gym_app/core/utils/app_colors.dart';
+import 'package:gym_app/features/statistics/model/statistics_model.dart';
 import 'package:gym_app/features/statistics/widgets/statistics_bottom_nav_bar.dart';
 import 'package:gym_app/features/statistics/widgets/statistics_header.dart';
 import 'package:gym_app/features/statistics/widgets/statistics_heart_rate_card.dart';
@@ -16,48 +18,7 @@ class StatisticsScreen extends StatefulWidget {
 
 class _StatisticsScreenState extends State<StatisticsScreen> {
   int _selectedPeriodIndex = 0;
-  int _selectedNavIndex = 1;
-
-  static const List<String> _periods = ['الأسبوع', 'الشهر', 'السنة'];
-
-  static const List<Map<String, dynamic>> _weeklyDays = [
-    {
-      'label': 'سبت',
-      'factor': 0.55,
-      'color': Color(0xff2C303A),
-    },
-    {
-      'label': 'أحد',
-      'factor': 0.85,
-      'color': Color(0xff7A9900),
-    },
-    {
-      'label': 'اثنين',
-      'factor': 0.48,
-      'color': Color(0xff2C303A),
-    },
-    {
-      'label': 'ثلاثاء',
-      'factor': 1.0,
-      'color': AppColors.primaryColor,
-      'highlighted': true,
-    },
-    {
-      'label': 'أربعاء',
-      'factor': 0.72,
-      'color': Color(0xff7A9900),
-    },
-    {
-      'label': 'خميس',
-      'factor': 0.90,
-      'color': AppColors.primaryColor,
-    },
-    {
-      'label': 'جمعة',
-      'factor': 0.36,
-      'color': Color(0xff2C303A),
-    },
-  ];
+  static const int _selectedNavIndex = 1;
 
   double _calculateScale(BuildContext context, BoxConstraints constraints) {
     final double screenWidth = constraints.hasBoundedWidth
@@ -93,7 +54,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         SizedBox(height: 20.0 * scale),
                         StatisticsPeriodTabs(
                           scale: scale,
-                          periods: _periods,
+                          periods: statisticsPeriods,
                           selectedIndex: _selectedPeriodIndex,
                           onSelect: (index) {
                             setState(() {
@@ -104,7 +65,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         SizedBox(height: 18.0 * scale),
                         StatisticsWeeklyActivityCard(
                           scale: scale,
-                          days: _weeklyDays,
+                          days: weeklyActivityDays,
                         ),
                         SizedBox(height: 16.0 * scale),
                         StatisticsSummaryRow(scale: scale),
@@ -121,9 +82,11 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
               scale: scale,
               selectedIndex: _selectedNavIndex,
               onSelect: (index) {
-                setState(() {
-                  _selectedNavIndex = index;
-                });
+                AppRouter.navigateByNavIndex(
+                  context,
+                  currentIndex: _selectedNavIndex,
+                  targetIndex: index,
+                );
               },
             ),
           );
