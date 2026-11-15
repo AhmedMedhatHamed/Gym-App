@@ -47,7 +47,7 @@ class _SignupFormState extends State<SignupForm> {
             controller: nameController,
             obscureText: false,
             validator: Validator.validateName,
-            text: 'AhmedM',
+            text: 'Ahmed M',
             prefixIcon: Icons.person,
             keyboardType: .name,
             textInputAction: .next,
