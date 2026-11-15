@@ -37,4 +37,15 @@ class FirebaseDataSource {
     );
   }
 
+
+
+  Future<void> forgotPassword({
+    required String email,
+  }) async {
+    await _auth.sendPasswordResetEmail(
+      email: email,
+    );
+  }
+
+
 }

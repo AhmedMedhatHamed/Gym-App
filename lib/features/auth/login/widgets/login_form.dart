@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gym_app/core/routes/app_routes.dart';
 import 'package:gym_app/core/utils/app_colors.dart';
 import 'package:gym_app/core/utils/app_styles.dart';
 import 'package:gym_app/core/utils/validators.dart';
@@ -90,7 +91,9 @@ class _LoginFormState extends State<LoginForm> {
               ),
               SizedBox(height: 10.0),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, AppRoutes.forgotPasswordScreen);
+                },
                 child: Text(
                   'نسيت كلمة المرور؟',
                   style: AppStyles.noto700Size18.copyWith(
@@ -101,7 +104,11 @@ class _LoginFormState extends State<LoginForm> {
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.15),
               if (state is LoginLoading)
-                 Center(child: CircularProgressIndicator(color: AppColors.primaryColor,))
+                Center(
+                  child: CircularProgressIndicator(
+                    color: AppColors.primaryColor,
+                  ),
+                )
               else
                 CustomButton(
                   text: 'تسجيل الدخول',

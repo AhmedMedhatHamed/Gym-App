@@ -1,5 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gym_app/core/routes/app_routes.dart';
+import 'package:gym_app/features/auth/forgot_password/cubit/forgot_password_cubit.dart';
+import 'package:gym_app/features/auth/forgot_password/forgot_password_screen.dart';
 import 'package:gym_app/features/auth/login/cubit/login_cubit.dart';
 import 'package:gym_app/features/auth/login/login_screen.dart';
 import 'package:gym_app/features/auth/signup/cubit/signup_cubit.dart';
@@ -24,6 +26,14 @@ class AppRouter {
 
       case AppRoutes.onboardingScreen:
         return MaterialPageRoute(builder: (_) => OnboardingScreen());
+
+      case AppRoutes.forgotPasswordScreen:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (context) => ForgotPasswordCubit(),
+            child: ForgotPasswordScreen(),
+          ),
+        );
 
       case AppRoutes.signupScreen:
         return MaterialPageRoute(
