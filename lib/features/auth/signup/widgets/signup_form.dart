@@ -23,6 +23,8 @@ class _SignupFormState extends State<SignupForm> {
 
   final formKey = GlobalKey<FormState>();
 
+  bool isPasswordVisible = false;
+
   @override
   void dispose() {
     emailController.dispose();
@@ -118,11 +120,18 @@ class _SignupFormState extends State<SignupForm> {
               ),
               CustomTextField(
                 controller: passwordController,
-                obscureText: true,
+                obscureText: !isPasswordVisible,
                 validator: Validator.validatePassword,
                 text: '••••••••••',
                 prefixIcon: Icons.lock,
-                suffixIcon: Icons.remove_red_eye,
+                suffixIcon: isPasswordVisible
+                    ? Icons.visibility
+                    : Icons.visibility_off,
+                onSuffixIconPressed: () {
+                  setState(() {
+                    isPasswordVisible = !isPasswordVisible;
+                  });
+                },
                 textInputAction: TextInputAction.done,
                 keyboardType: TextInputType.visiblePassword,
               ),

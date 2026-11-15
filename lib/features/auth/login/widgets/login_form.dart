@@ -1,13 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gym_app/core/routes/app_routes.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:gym_app/core/utils/app_colors.dart';
 import 'package:gym_app/core/utils/app_styles.dart';
 import 'package:gym_app/core/utils/validators.dart';
 import 'package:gym_app/core/widgets/custom_button.dart';
+import 'package:gym_app/core/routes/app_routes.dart';
 import 'package:gym_app/features/auth/login/cubit/login_cubit.dart';
 import 'package:gym_app/features/auth/widgets/custom_text_field.dart';
 import 'package:gym_app/features/home/home_screen.dart';
-import 'package:material_ui/material_ui.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -17,10 +17,11 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
+
+  bool isPasswordVisible = false;
 
   @override
   void dispose() {
@@ -34,10 +35,11 @@ class _LoginFormState extends State<LoginForm> {
     return BlocConsumer<LoginCubit, LoginState>(
       listener: (context, state) {
         if (state is LoginSuccess) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('Login Successfully')));
-          Navigator.push(
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('تم تسجيل الدخول بنجاح')),
+          );
+
+          Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => HomeScreen()),
           );
@@ -52,13 +54,13 @@ class _LoginFormState extends State<LoginForm> {
         return Form(
           key: formKey,
           child: Column(
-            crossAxisAlignment: .start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 50.0),
+               SizedBox(height: 50.0),
               Text(
-                'Email Address',
+                'Email',
                 style: AppStyles.noto700Size18.copyWith(
-                  fontSize: 13.0,
+                  fontSize: 13,
                   color: AppColors.primaryColor,
                 ),
               ),
@@ -66,30 +68,37 @@ class _LoginFormState extends State<LoginForm> {
                 controller: emailController,
                 obscureText: false,
                 validator: Validator.validateEmail,
-                text: 'ahmed@gympro.com',
+                text: 'Email Address',
                 prefixIcon: Icons.email_outlined,
-                keyboardType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
+                keyboardType: TextInputType.emailAddress,
               ),
-              SizedBox(height: 30.0),
+              SizedBox(height: 30),
               Text(
                 'Password',
                 style: AppStyles.noto700Size18.copyWith(
-                  fontSize: 13.0,
+                  fontSize: 13,
                   color: AppColors.primaryColor,
                 ),
               ),
               CustomTextField(
                 controller: passwordController,
-                obscureText: true,
+                obscureText: !isPasswordVisible,
                 validator: Validator.validatePassword,
                 text: '••••••••••',
                 prefixIcon: Icons.lock,
-                suffixIcon: Icons.remove_red_eye,
+                suffixIcon: isPasswordVisible
+                    ? Icons.visibility
+                    : Icons.visibility_off,
+                onSuffixIconPressed: () {
+                  setState(() {
+                    isPasswordVisible = !isPasswordVisible;
+                  });
+                },
                 textInputAction: TextInputAction.done,
                 keyboardType: TextInputType.visiblePassword,
               ),
-              SizedBox(height: 10.0),
+
               TextButton(
                 onPressed: () {
                   Navigator.pushNamed(context, AppRoutes.forgotPasswordScreen);
@@ -102,7 +111,9 @@ class _LoginFormState extends State<LoginForm> {
                   ),
                 ),
               ),
+
               SizedBox(height: MediaQuery.of(context).size.height * 0.15),
+
               if (state is LoginLoading)
                 Center(
                   child: CircularProgressIndicator(

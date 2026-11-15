@@ -11,6 +11,7 @@ class CustomTextField extends StatelessWidget {
     required this.text,
     required this.prefixIcon,
     this.suffixIcon,
+    this.onSuffixIconPressed,
     required this.textInputAction,
     required this.keyboardType,
   });
@@ -21,8 +22,10 @@ class CustomTextField extends StatelessWidget {
   final String text;
   final IconData prefixIcon;
   final IconData? suffixIcon;
+  final VoidCallback? onSuffixIconPressed;
   final TextInputAction textInputAction;
   final TextInputType keyboardType;
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -39,11 +42,16 @@ class CustomTextField extends StatelessWidget {
         hintText: text,
         hintStyle: AppStyles.noto700Size28.copyWith(
           fontSize: 16.0,
-          fontWeight: .w400,
-          color: AppColors.textColor
+          fontWeight: FontWeight.w400,
+          color: AppColors.textColor,
         ),
         prefixIcon: Icon(prefixIcon, color: AppColors.primaryColor),
-        suffixIcon: Icon(suffixIcon, color: AppColors.primaryColor),
+        suffixIcon: suffixIcon == null
+            ? null
+            : IconButton(
+                onPressed: onSuffixIconPressed,
+                icon: Icon(suffixIcon, color: AppColors.primaryColor),
+              ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.0),
           borderSide: BorderSide(color: AppColors.cardColor),
