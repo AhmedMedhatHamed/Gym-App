@@ -47,5 +47,7 @@ class FirebaseDataSource {
     );
   }
 
-
+  Future<void> logout() async {
+    await _auth.signOut();
+  }
 }
