@@ -1,0 +1,187 @@
+import 'dart:async';
+
+import 'package:gym_app/core/utils/app_colors.dart';
+import 'package:gym_app/core/utils/app_styles.dart';
+import 'package:gym_app/core/widgets/custom_bottom_nav_bar.dart';
+import 'package:gym_app/core/widgets/custom_button.dart';
+import 'package:gym_app/features/workout_details/model/workout_details_model.dart';
+import 'package:gym_app/features/workout_details/widgets/exercise_list_item.dart';
+import 'package:gym_app/features/workout_details/widgets/workout_details_app_bar.dart';
+import 'package:gym_app/features/workout_details/widgets/workout_info_section.dart';
+import 'package:gym_app/features/workout_details/widgets/workout_video_preview.dart';
+import 'package:material_ui/material_ui.dart';
+
+class WorkoutDetailsScreen extends StatefulWidget {
+  const WorkoutDetailsScreen({
+    super.key,
+    this.workout = chestDumbbellWorkout,
+  });
+
+  final WorkoutDetailsModel workout;
+
+  @override
+  State<WorkoutDetailsScreen> createState() => _WorkoutDetailsScreenState();
+}
+
+class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
+  int currentNavIndex = 2;
+  int? selectedExerciseIndex;
+  int? pausedExerciseIndex;
+  int remainingSeconds = 0;
+  Timer? _restTimer;
+
+  @override
+  void dispose() {
+    _restTimer?.cancel();
+    super.dispose();
+  }
+
+  void _onPlayPausePressed(int index) {
+    final exercise = widget.workout.exercises[index];
+
+    // Already resting on this exercise → cancel rest and return to play.
+    if (pausedExerciseIndex == index) {
+      _stopRestTimer();
+      setState(() {
+        pausedExerciseIndex = null;
+        remainingSeconds = 0;
+        selectedExerciseIndex = index;
+      });
+      return;
+    }
+
+    // Selected / playing → press pause starts a 60sec rest timer.
+    if (selectedExerciseIndex == index && pausedExerciseIndex == null) {
+      _startRestTimer(index, exercise.restSeconds);
+      return;
+    }
+
+    // Select a new exercise (show pause icon when active).
+    _stopRestTimer();
+    setState(() {
+      selectedExerciseIndex = index;
+      pausedExerciseIndex = null;
+      remainingSeconds = 0;
+    });
+  }
+
+  void _startRestTimer(int index, int seconds) {
+    _restTimer?.cancel();
+    setState(() {
+      pausedExerciseIndex = index;
+      remainingSeconds = seconds;
+    });
+
+    _restTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (remainingSeconds <= 1) {
+        timer.cancel();
+        setState(() {
+          pausedExerciseIndex = null;
+          remainingSeconds = 0;
+          selectedExerciseIndex = index;
+        });
+        return;
+      }
+
+      setState(() {
+        remainingSeconds -= 1;
+      });
+    });
+  }
+
+  void _stopRestTimer() {
+    _restTimer?.cancel();
+    _restTimer = null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final workout = widget.workout;
+    final coverImage = workout.exercises.first.image;
+
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
+        backgroundColor: AppColors.backgroundColor,
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Column(
+              children: [
+                const SizedBox(height: 8.0),
+                const WorkoutDetailsAppBar(),
+                const SizedBox(height: 20.0),
+                Expanded(
+                  child: CustomScrollView(
+                    slivers: [
+                      SliverToBoxAdapter(
+                        child: WorkoutVideoPreview(
+                          imagePath: coverImage,
+                          onPlayPressed: () {
+                            if (workout.exercises.isNotEmpty) {
+                              _onPlayPausePressed(0);
+                            }
+                          },
+                        ),
+                      ),
+                      const SliverToBoxAdapter(child: SizedBox(height: 20.0)),
+                      SliverToBoxAdapter(
+                        child: WorkoutInfoSection(workout: workout),
+                      ),
+                      const SliverToBoxAdapter(child: SizedBox(height: 24.0)),
+                      SliverToBoxAdapter(
+                        child: Text(
+                          'جدول التمارين (${workout.exercises.length})',
+                          style: AppStyles.noto700Size16.copyWith(
+                            fontSize: 18.0,
+                          ),
+                        ),
+                      ),
+                      const SliverToBoxAdapter(child: SizedBox(height: 14.0)),
+                      SliverList.separated(
+                        itemCount: workout.exercises.length,
+                        separatorBuilder: (_, _) =>
+                            const SizedBox(height: 12.0),
+                        itemBuilder: (context, index) {
+                          final exercise = workout.exercises[index];
+                          final isSelected = selectedExerciseIndex == index;
+                          final isPaused = pausedExerciseIndex == index;
+
+                          return ExerciseListItem(
+                            exercise: exercise,
+                            isSelected: isSelected || isPaused,
+                            isPaused: isPaused,
+                            remainingSeconds: isPaused ? remainingSeconds : 0,
+                            onPlayPausePressed: () =>
+                                _onPlayPausePressed(index),
+                          );
+                        },
+                      ),
+                      const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
+                    ],
+                  ),
+                ),
+                CustomButton(
+                  text: 'ابدأ التمرين الآن',
+                  onPressed: () {},
+                ),
+                const SizedBox(height: 12.0),
+              ],
+            ),
+          ),
+        ),
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 16.0),
+          child: CustomBottomNavBar(
+            currentIndex: currentNavIndex,
+            onTap: (index) {
+              setState(() {
+                currentNavIndex = index;
+              });
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}

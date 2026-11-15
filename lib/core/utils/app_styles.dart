@@ -23,4 +23,18 @@ class AppStyles {
       color: AppColors.backgroundColor,
   );
 
+  static const TextStyle noto700Size22 = TextStyle(
+      fontSize: 22.0,
+      fontWeight: .w700,
+      fontFamily: 'Noto',
+      color: AppColors.white,
+  );
+
+  static const TextStyle noto700Size16 = TextStyle(
+      fontSize: 16.0,
+      fontWeight: .w700,
+      fontFamily: 'Noto',
+      color: AppColors.white,
+  );
+
 }
