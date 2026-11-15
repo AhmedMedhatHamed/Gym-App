@@ -7,7 +7,6 @@ import 'package:gym_app/core/widgets/custom_button.dart';
 import 'package:gym_app/core/routes/app_routes.dart';
 import 'package:gym_app/features/auth/login/cubit/login_cubit.dart';
 import 'package:gym_app/features/auth/widgets/custom_text_field.dart';
-import 'package:gym_app/features/home/home_screen.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -39,10 +38,7 @@ class _LoginFormState extends State<LoginForm> {
             SnackBar(content: Text('تم تسجيل الدخول بنجاح')),
           );
 
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => HomeScreen()),
-          );
+          Navigator.pushReplacementNamed(context, AppRoutes.homeScreen);
         }
 
         if (state is LoginFailure) {

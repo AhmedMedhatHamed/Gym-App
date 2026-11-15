@@ -6,6 +6,7 @@ import 'package:gym_app/features/auth/login/cubit/login_cubit.dart';
 import 'package:gym_app/features/auth/login/login_screen.dart';
 import 'package:gym_app/features/auth/signup/cubit/signup_cubit.dart';
 import 'package:gym_app/features/auth/signup/signup_screen.dart';
+import 'package:gym_app/features/home/home_screen.dart';
 import 'package:gym_app/features/onboarding/onboarding_screen.dart';
 import 'package:gym_app/features/splash/splash_screen.dart';
 import 'package:material_ui/material_ui.dart';
@@ -42,6 +43,9 @@ class AppRouter {
             child: SignupScreen(),
           ),
         );
+
+      case AppRoutes.homeScreen:
+        return MaterialPageRoute(builder: (_) => const HomeScreen());
     }
     return null;
   }
