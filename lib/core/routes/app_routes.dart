@@ -4,5 +4,4 @@ class AppRoutes {
   static const String onboardingScreen = 'onboardingScreen';
   static const String signupScreen = 'signupScreen';
   static const String forgotPasswordScreen = 'forgotPasswordScreen';
-  static const String verificationScreen = 'verificationScreen';
 }

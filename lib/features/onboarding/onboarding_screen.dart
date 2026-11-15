@@ -1,3 +1,4 @@
+import 'package:gym_app/core/routes/app_routes.dart';
 import 'package:gym_app/core/utils/app_colors.dart';
 import 'package:gym_app/core/utils/app_styles.dart';
 import 'package:gym_app/core/widgets/custom_button.dart';
@@ -83,7 +84,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       );
                     }
                     else{
-                      ///
+                      Navigator.pushReplacementNamed(context, AppRoutes.loginScreen);
                     }
                   },
                 ),
