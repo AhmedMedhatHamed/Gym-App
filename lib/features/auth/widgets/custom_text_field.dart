@@ -26,7 +26,7 @@ class CustomTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      style: AppStyles.noto400Size15,
+      style: AppStyles.noto400Size15.copyWith(color: AppColors.white),
       controller: controller,
       cursorColor: AppColors.primaryColor,
       obscureText: obscureText,
@@ -40,6 +40,7 @@ class CustomTextField extends StatelessWidget {
         hintStyle: AppStyles.noto700Size28.copyWith(
           fontSize: 16.0,
           fontWeight: .w400,
+          color: AppColors.textColor
         ),
         prefixIcon: Icon(prefixIcon, color: AppColors.primaryColor),
         suffixIcon: Icon(suffixIcon, color: AppColors.primaryColor),
