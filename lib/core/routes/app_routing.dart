@@ -7,8 +7,11 @@ import 'package:gym_app/features/auth/login/login_screen.dart';
 import 'package:gym_app/features/auth/signup/cubit/signup_cubit.dart';
 import 'package:gym_app/features/auth/signup/signup_screen.dart';
 import 'package:gym_app/features/home/home_screen.dart';
+import 'package:gym_app/features/home/model/workout_program_model.dart';
 import 'package:gym_app/features/onboarding/onboarding_screen.dart';
 import 'package:gym_app/features/splash/splash_screen.dart';
+import 'package:gym_app/features/workout_details/model/workout_details_model.dart';
+import 'package:gym_app/features/workout_details/workout_details_screen.dart';
 import 'package:material_ui/material_ui.dart';
 
 class AppRouter {
@@ -46,6 +49,17 @@ class AppRouter {
 
       case AppRoutes.homeScreen:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
+
+      case AppRoutes.workoutDetailsScreen:
+        final args = settings.arguments;
+        final workout = args is WorkoutDetailsModel
+            ? args
+            : args is WorkoutProgramModel
+                ? WorkoutDetailsModel.fromProgram(args)
+                : chestDumbbellWorkout;
+        return MaterialPageRoute(
+          builder: (_) => WorkoutDetailsScreen(workout: workout),
+        );
     }
     return null;
   }
