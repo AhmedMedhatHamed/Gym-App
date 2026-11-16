@@ -22,6 +22,7 @@ class WorkoutDetailsModel {
   final int sets;
   final int reps;
   final int calories;
+  final int durationMinutes;
   final String level;
   final String videoPath;
   final List<ExerciseModel> exercises;
@@ -31,6 +32,7 @@ class WorkoutDetailsModel {
     required this.sets,
     required this.reps,
     required this.calories,
+    this.durationMinutes = 45,
     required this.level,
     required this.videoPath,
     required this.exercises,
@@ -42,6 +44,7 @@ class WorkoutDetailsModel {
       sets: 3,
       reps: 12,
       calories: program.calories,
+      durationMinutes: program.durationMinutes,
       level: program.level,
       videoPath: AppConsts.highDumbbellChestVideo,
       exercises: _exercisesFor(program),

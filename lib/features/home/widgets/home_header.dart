@@ -72,20 +72,6 @@ class HomeHeader extends StatelessWidget {
               ),
             ],
           ),
-          const Spacer(),
-          Container(
-            width: 46.0,
-            height: 46.0,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: AppColors.chipColor, width: 2.0),
-            ),
-            child: const Icon(
-              Icons.autorenew_rounded,
-              color: AppColors.white,
-              size: 22.0,
-            ),
-          ),
         ],
       ),
     );

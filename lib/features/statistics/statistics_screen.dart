@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gym_app/core/routes/app_routing.dart';
 import 'package:gym_app/core/utils/app_colors.dart';
-import 'package:gym_app/features/statistics/model/statistics_model.dart';
 import 'package:gym_app/core/widgets/custom_bottom_nav_bar.dart';
+import 'package:gym_app/features/profile/model/profile_model.dart';
+import 'package:gym_app/features/statistics/model/statistics_model.dart';
 import 'package:gym_app/features/statistics/widgets/statistics_header.dart';
 import 'package:gym_app/features/statistics/widgets/statistics_heart_rate_card.dart';
 import 'package:gym_app/features/statistics/widgets/statistics_period_tabs.dart';
@@ -68,7 +69,33 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                           days: weeklyActivityDays,
                         ),
                         SizedBox(height: 16.0 * scale),
-                        StatisticsSummaryRow(scale: scale),
+                        ValueListenableBuilder<int>(
+                          valueListenable: burnedCaloriesNotifier,
+                          builder: (context, additionalCalories, _) {
+                            return ValueListenableBuilder<int>(
+                              valueListenable: workoutMinutesNotifier,
+                              builder: (context, additionalMinutes, _) {
+                                const int baseCalories = 2450;
+                                final int totalCalories =
+                                    baseCalories + additionalCalories;
+                                final String formattedCalories =
+                                    totalCalories >= 1000
+                                        ? '${(totalCalories ~/ 1000)},${(totalCalories % 1000).toString().padLeft(3, '0')}'
+                                        : '$totalCalories';
+
+                                const int baseMinutes = 180;
+                                final int totalMinutes =
+                                    baseMinutes + additionalMinutes;
+
+                                return StatisticsSummaryRow(
+                                  scale: scale,
+                                  calories: formattedCalories,
+                                  workoutMinutes: '$totalMinutes',
+                                );
+                              },
+                            );
+                          },
+                        ),
                         SizedBox(height: 16.0 * scale),
                         StatisticsHeartRateCard(scale: scale),
                         SizedBox(height: 16.0 * scale),

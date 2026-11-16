@@ -1,12 +1,16 @@
 import 'dart:typed_data';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:gym_app/features/profile/model/profile_model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class HiveDataSource {
   static const String profileBoxName = 'profile_box';
   static const String profileImageKey = 'profile_image';
   static const String userNameKey = 'user_name';
+  static const String workoutLogsKey = 'workout_logs';
+  static const String burnedCaloriesKey = 'burned_calories';
+  static const String workoutMinutesKey = 'workout_minutes';
 
   static Future<void> init() async {
     await Hive.initFlutter();
@@ -64,5 +68,67 @@ class HiveDataSource {
     if (!Hive.isBoxOpen(profileBoxName)) return;
     await _profileBox.delete(_activeKeyFor(userNameKey));
     await _profileBox.delete(userNameKey);
+  }
+
+  static Future<void> addWorkoutLog(ProfileWorkoutLogModel log) async {
+    final logs = getWorkoutLogs();
+    logs.insert(0, log);
+    final rawList = logs.map((item) => item.toJson()).toList();
+    final key = _activeKeyFor(workoutLogsKey);
+    await _profileBox.put(key, rawList);
+    await _profileBox.put(workoutLogsKey, rawList);
+  }
+
+  static List<ProfileWorkoutLogModel> getWorkoutLogs() {
+    if (!Hive.isBoxOpen(profileBoxName)) return [];
+    dynamic data = _profileBox.get(_activeKeyFor(workoutLogsKey));
+    data ??= _profileBox.get(workoutLogsKey);
+    if (data == null || data is! List) return [];
+
+    return data
+        .whereType<Map>()
+        .map((m) => ProfileWorkoutLogModel.fromJson(m))
+        .toList();
+  }
+
+  static Future<void> deleteWorkoutLog(int index) async {
+    final logs = getWorkoutLogs();
+    if (index >= 0 && index < logs.length) {
+      logs.removeAt(index);
+      final rawList = logs.map((item) => item.toJson()).toList();
+      final key = _activeKeyFor(workoutLogsKey);
+      await _profileBox.put(key, rawList);
+      await _profileBox.put(workoutLogsKey, rawList);
+    }
+  }
+
+  static Future<void> addBurnedCalories(int calories) async {
+    final current = getBurnedCalories();
+    final updated = current + calories;
+    final key = _activeKeyFor(burnedCaloriesKey);
+    await _profileBox.put(key, updated);
+    await _profileBox.put(burnedCaloriesKey, updated);
+  }
+
+  static int getBurnedCalories() {
+    if (!Hive.isBoxOpen(profileBoxName)) return 0;
+    dynamic data = _profileBox.get(_activeKeyFor(burnedCaloriesKey));
+    data ??= _profileBox.get(burnedCaloriesKey);
+    return (data as num?)?.toInt() ?? 0;
+  }
+
+  static Future<void> addWorkoutMinutes(int minutes) async {
+    final current = getWorkoutMinutes();
+    final updated = current + minutes;
+    final key = _activeKeyFor(workoutMinutesKey);
+    await _profileBox.put(key, updated);
+    await _profileBox.put(workoutMinutesKey, updated);
+  }
+
+  static int getWorkoutMinutes() {
+    if (!Hive.isBoxOpen(profileBoxName)) return 0;
+    dynamic data = _profileBox.get(_activeKeyFor(workoutMinutesKey));
+    data ??= _profileBox.get(workoutMinutesKey);
+    return (data as num?)?.toInt() ?? 0;
   }
 }

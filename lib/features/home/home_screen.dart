@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gym_app/core/routes/app_routes.dart';
 import 'package:gym_app/core/routes/app_routing.dart';
 import 'package:gym_app/core/utils/app_colors.dart';
 import 'package:gym_app/core/widgets/custom_bottom_nav_bar.dart';
@@ -40,8 +41,12 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   const SliverToBoxAdapter(child: SizedBox(height: 24.0)),
-                  const SliverToBoxAdapter(
+                  SliverToBoxAdapter(
                     child: SectionHeader(
+                      onActionTap: () => Navigator.pushNamed(
+                        context,
+                        AppRoutes.statisticsScreen,
+                      ),
                       title: 'نشاطك اليومي',
                       actionText: 'عرض الكل',
                     ),

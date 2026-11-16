@@ -16,6 +16,9 @@ void main() async {
   await HiveDataSource.init();
   profileImageNotifier.value = HiveDataSource.getProfileImage();
   userNameNotifier.value = HiveDataSource.getUserName() ?? '';
+  workoutLogsNotifier.value = HiveDataSource.getWorkoutLogs();
+  burnedCaloriesNotifier.value = HiveDataSource.getBurnedCalories();
+  workoutMinutesNotifier.value = HiveDataSource.getWorkoutMinutes();
 
   runApp(const MyApp());
 }

@@ -19,7 +19,7 @@ class ProfileCubit extends Cubit<ProfileState> {
             avatarBytes:
                 HiveDataSource.getProfileImage() ?? profileImageNotifier.value,
             badges: profileBadges,
-            workoutLogs: profileWorkoutLogs,
+            workoutLogs: HiveDataSource.getWorkoutLogs(),
             userName:
                 HiveDataSource.getUserName() ?? userNameNotifier.value,
           ),
@@ -43,7 +43,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       avatarBytes:
           HiveDataSource.getProfileImage() ?? profileImageNotifier.value,
       badges: profileBadges,
-      workoutLogs: profileWorkoutLogs,
+      workoutLogs: HiveDataSource.getWorkoutLogs(),
       userName: HiveDataSource.getUserName() ?? userNameNotifier.value,
     );
   }
@@ -104,6 +104,13 @@ class ProfileCubit extends Cubit<ProfileState> {
     await HiveDataSource.deleteProfileImage();
     profileImageNotifier.value = null;
     emit(_currentState.copyWith(avatarBytes: () => null));
+  }
+
+  Future<void> deleteWorkoutLog(int index) async {
+    await HiveDataSource.deleteWorkoutLog(index);
+    final updatedLogs = HiveDataSource.getWorkoutLogs();
+    workoutLogsNotifier.value = updatedLogs;
+    emit(_currentState.copyWith(workoutLogs: updatedLogs));
   }
 
   Future<void> logout() async {

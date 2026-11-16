@@ -84,6 +84,8 @@ class ProfileScreen extends StatelessWidget {
                               name: profile.userName.isNotEmpty
                                   ? profile.userName
                                   : 'كابتن',
+                              levelAndWorkouts:
+                                  'مستوى متقدم • ${profile.workoutLogs.length} تمرين مكتمل',
                               imageBytes: profile.avatarBytes,
                               onAvatarTap: () {
                                 ProfileImagePickerSheet.show(
@@ -106,6 +108,11 @@ class ProfileScreen extends StatelessWidget {
                             ProfileWorkoutLogSection(
                               scale: scale,
                               workouts: profile.workoutLogs,
+                              onDismissed: (index) {
+                                context
+                                    .read<ProfileCubit>()
+                                    .deleteWorkoutLog(index);
+                              },
                             ),
                             SizedBox(height: 20.0 * scale),
                             ProfileLogoutButton(
