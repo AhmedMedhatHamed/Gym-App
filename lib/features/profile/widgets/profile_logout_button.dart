@@ -4,11 +4,11 @@ class ProfileLogoutButton extends StatelessWidget {
   const ProfileLogoutButton({
     super.key,
     required this.scale,
-    required this.onPressed,
+    this.onPressed,
   });
 
   final double scale;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {

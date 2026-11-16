@@ -3,11 +3,20 @@ import 'package:gym_app/core/utils/app_styles.dart';
 import 'package:material_ui/material_ui.dart';
 
 class HomeSearchField extends StatelessWidget {
-  const HomeSearchField({super.key});
+  const HomeSearchField({
+    super.key,
+    this.onChanged,
+    this.controller,
+  });
+
+  final ValueChanged<String>? onChanged;
+  final TextEditingController? controller;
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      controller: controller,
+      onChanged: onChanged,
       style: AppStyles.noto400Size15.copyWith(color: AppColors.white),
       cursorColor: AppColors.primaryColor,
       textInputAction: TextInputAction.search,
