@@ -5,6 +5,17 @@ import 'package:flutter/material.dart';
 final ValueNotifier<Uint8List?> profileImageNotifier =
     ValueNotifier<Uint8List?>(null);
 
+final ValueNotifier<String> userNameNotifier = ValueNotifier<String>('');
+
+final ValueNotifier<List<ProfileWorkoutLogModel>> workoutLogsNotifier =
+    ValueNotifier<List<ProfileWorkoutLogModel>>([]);
+
+final ValueNotifier<int> burnedCaloriesNotifier = ValueNotifier<int>(0);
+
+final ValueNotifier<int> workoutMinutesNotifier = ValueNotifier<int>(0);
+
+final ValueNotifier<int> todayStepsNotifier = ValueNotifier<int>(0);
+
 class ProfileBadgeModel {
   final String title;
   final String emoji;
@@ -29,6 +40,24 @@ class ProfileWorkoutLogModel {
     required this.emoji,
     required this.boxColor,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'subtitle': subtitle,
+      'emoji': emoji,
+      'boxColor': boxColor.toARGB32(),
+    };
+  }
+
+  factory ProfileWorkoutLogModel.fromJson(Map<dynamic, dynamic> json) {
+    return ProfileWorkoutLogModel(
+      title: json['title'] as String? ?? '',
+      subtitle: json['subtitle'] as String? ?? '',
+      emoji: json['emoji'] as String? ?? '💪',
+      boxColor: Color((json['boxColor'] as num?)?.toInt() ?? 0xff2A2F1B),
+    );
+  }
 }
 
 const List<ProfileBadgeModel> profileBadges = [
@@ -49,17 +78,4 @@ const List<ProfileBadgeModel> profileBadges = [
   ),
 ];
 
-const List<ProfileWorkoutLogModel> profileWorkoutLogs = [
-  ProfileWorkoutLogModel(
-    title: 'تمرين الصدر والبنج',
-    subtitle: 'أمس، 45 دقيقة • 320 سعرة',
-    emoji: '💪',
-    boxColor: Color(0xff2A2F1B),
-  ),
-  ProfileWorkoutLogModel(
-    title: 'كارديو وحرق دهون',
-    subtitle: 'منذ يومين، 30 دقيقة • 280 سعرة',
-    emoji: '🏃',
-    boxColor: Color(0xff182830),
-  ),
-];
+const List<ProfileWorkoutLogModel> profileWorkoutLogs = [];

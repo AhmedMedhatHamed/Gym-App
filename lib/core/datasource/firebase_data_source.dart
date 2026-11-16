@@ -1,7 +1,7 @@
 import 'dart:developer';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gym_app/features/auth/model/user_model.dart';
 
 class FirebaseDataSource {
@@ -20,6 +20,8 @@ class FirebaseDataSource {
         password: password,
       );
 
+      await userCredential.user?.updateDisplayName(name);
+
       await _firestore
           .collection('users')
           .doc(userCredential.user!.uid)
@@ -33,11 +35,27 @@ class FirebaseDataSource {
           );
     } catch (e) {
       log(e.toString());
+      rethrow;
     }
   }
 
   Future<void> login({required String email, required String password}) async {
     await _auth.signInWithEmailAndPassword(email: email, password: password);
+  }
+
+  Future<UserModel?> getUserData([String? uid]) async {
+    final userId = uid ?? _auth.currentUser?.uid;
+    if (userId == null) return null;
+
+    try {
+      final doc = await _firestore.collection('users').doc(userId).get();
+      if (doc.exists && doc.data() != null) {
+        return UserModel.fromJson(doc.data()!);
+      }
+    } catch (e) {
+      log('Error getting user data: $e');
+    }
+    return null;
   }
 
   Future<void> signOut() async {

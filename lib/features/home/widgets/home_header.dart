@@ -1,8 +1,10 @@
 import 'dart:typed_data';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gym_app/core/routes/app_routes.dart';
 import 'package:gym_app/core/utils/app_colors.dart';
 import 'package:gym_app/core/utils/app_styles.dart';
+import 'package:gym_app/features/home/cubit/home_cubit.dart';
 import 'package:gym_app/features/profile/model/profile_model.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -51,22 +53,24 @@ class HomeHeader extends StatelessWidget {
                 'صباح النشاط',
                 style: AppStyles.noto400Size15.copyWith(fontSize: 13.0),
               ),
-              Text('مرحبا، كابتن!', style: AppStyles.noto700Size22),
+              BlocBuilder<HomeCubit, HomeState>(
+                buildWhen: (previous, current) {
+                  if (previous is HomeLoaded && current is HomeLoaded) {
+                    return previous.userName != current.userName;
+                  }
+                  return true;
+                },
+                builder: (context, state) {
+                  final name = state is HomeLoaded && state.userName.isNotEmpty
+                      ? state.userName
+                      : userNameNotifier.value;
+                  return Text(
+                    name.isNotEmpty ? 'مرحبا، $name!' : 'مرحبا، كابتن!',
+                    style: AppStyles.noto700Size22,
+                  );
+                },
+              ),
             ],
-          ),
-          const Spacer(),
-          Container(
-            width: 46.0,
-            height: 46.0,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: AppColors.chipColor, width: 2.0),
-            ),
-            child: const Icon(
-              Icons.autorenew_rounded,
-              color: AppColors.white,
-              size: 22.0,
-            ),
           ),
         ],
       ),

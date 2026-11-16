@@ -1,13 +1,21 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gym_app/core/datasource/firebase_data_source.dart';
+import 'package:gym_app/core/datasource/hive_data_source.dart';
+import 'package:gym_app/core/services/step_tracking_service.dart';
 import 'package:gym_app/features/home/model/workout_program_model.dart';
+import 'package:gym_app/features/profile/model/profile_model.dart';
 import 'package:material_ui/material_ui.dart';
 
 part 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
-  HomeCubit() : super(HomeInitial()) {
+  HomeCubit({FirebaseDataSource? firebaseDataSource})
+      : _firebaseDataSource = firebaseDataSource ?? FirebaseDataSource(),
+        super(HomeInitial()) {
     initHome();
   }
+
+  final FirebaseDataSource _firebaseDataSource;
 
   static HomeCubit get(BuildContext context) =>
       BlocProvider.of<HomeCubit>(context);
@@ -17,14 +25,30 @@ class HomeCubit extends Cubit<HomeState> {
 
   String _selectedCategory = workoutCategories.first;
   String _searchQuery = '';
+  String _userName = HiveDataSource.getUserName() ?? userNameNotifier.value;
 
   List<String> get categories => _categories;
   String get selectedCategory => _selectedCategory;
   List<WorkoutProgramModel> get allPrograms => _allPrograms;
   String get searchQuery => _searchQuery;
+  String get userName => _userName;
 
   void initHome() {
     _emitLoadedState();
+    loadUserData();
+    StepTrackingService.instance.init();
+  }
+
+  Future<void> loadUserData() async {
+    try {
+      final user = await _firebaseDataSource.getUserData();
+      if (user != null && user.name.isNotEmpty) {
+        _userName = user.name;
+        await HiveDataSource.saveUserName(user.name);
+        userNameNotifier.value = user.name;
+        _emitLoadedState();
+      }
+    } catch (_) {}
   }
 
   void selectCategory(String category) {
@@ -56,6 +80,7 @@ class HomeCubit extends Cubit<HomeState> {
         selectedCategory: _selectedCategory,
         filteredPrograms: filtered,
         searchQuery: _searchQuery,
+        userName: _userName,
       ),
     );
   }

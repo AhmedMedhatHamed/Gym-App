@@ -11,6 +11,7 @@ final class ProfileLoaded extends ProfileState {
   final List<ProfileBadgeModel> badges;
   final List<ProfileWorkoutLogModel> workoutLogs;
   final bool isLoggingOut;
+  final String userName;
 
   ProfileLoaded({
     this.selectedBadgeIndex = 0,
@@ -18,6 +19,7 @@ final class ProfileLoaded extends ProfileState {
     required this.badges,
     required this.workoutLogs,
     this.isLoggingOut = false,
+    this.userName = '',
   });
 
   ProfileLoaded copyWith({
@@ -26,6 +28,7 @@ final class ProfileLoaded extends ProfileState {
     List<ProfileBadgeModel>? badges,
     List<ProfileWorkoutLogModel>? workoutLogs,
     bool? isLoggingOut,
+    String? userName,
   }) {
     return ProfileLoaded(
       selectedBadgeIndex: selectedBadgeIndex ?? this.selectedBadgeIndex,
@@ -33,6 +36,7 @@ final class ProfileLoaded extends ProfileState {
       badges: badges ?? this.badges,
       workoutLogs: workoutLogs ?? this.workoutLogs,
       isLoggingOut: isLoggingOut ?? this.isLoggingOut,
+      userName: userName ?? this.userName,
     );
   }
 }

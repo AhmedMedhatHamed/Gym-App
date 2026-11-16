@@ -1,10 +1,12 @@
 import 'dart:async';
 
+import 'package:gym_app/core/datasource/hive_data_source.dart';
 import 'package:gym_app/core/routes/app_routing.dart';
 import 'package:gym_app/core/utils/app_colors.dart';
 import 'package:gym_app/core/utils/app_styles.dart';
 import 'package:gym_app/core/widgets/custom_bottom_nav_bar.dart';
 import 'package:gym_app/core/widgets/custom_button.dart';
+import 'package:gym_app/features/profile/model/profile_model.dart';
 import 'package:gym_app/features/workout_details/model/workout_details_model.dart';
 import 'package:gym_app/features/workout_details/widgets/exercise_list_item.dart';
 import 'package:gym_app/features/workout_details/widgets/workout_details_app_bar.dart';
@@ -112,7 +114,7 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
     return 'إنهاء التمرين';
   }
 
-  void _onMainActionPressed() {
+  Future<void> _onMainActionPressed() async {
     final exercises = widget.workout.exercises;
     if (exercises.isEmpty) return;
 
@@ -136,6 +138,24 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
       pausedExerciseIndex = null;
       remainingSeconds = 0;
     });
+
+    final newLog = ProfileWorkoutLogModel(
+      title: widget.workout.title,
+      subtitle:
+          'اليوم • ${widget.workout.durationMinutes} دقيقة • ${widget.workout.calories} سعرة',
+      emoji: '💪',
+      boxColor: const Color(0xff2A2F1B),
+    );
+
+    await HiveDataSource.addWorkoutLog(newLog);
+    await HiveDataSource.addBurnedCalories(widget.workout.calories);
+    await HiveDataSource.addWorkoutMinutes(widget.workout.durationMinutes);
+
+    workoutLogsNotifier.value = HiveDataSource.getWorkoutLogs();
+    burnedCaloriesNotifier.value = HiveDataSource.getBurnedCalories();
+    workoutMinutesNotifier.value = HiveDataSource.getWorkoutMinutes();
+
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: AppColors.cardColor,

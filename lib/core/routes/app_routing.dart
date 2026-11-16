@@ -90,6 +90,25 @@ class AppRouter {
     required int targetIndex,
   }) {
     if (targetIndex == currentIndex) return;
+
+    if (currentIndex == -1) {
+      switch (targetIndex) {
+        case 0:
+          Navigator.pushNamed(context, AppRoutes.profileScreen);
+          return;
+        case 1:
+          Navigator.pushNamed(context, AppRoutes.statisticsScreen);
+          return;
+        case 2:
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
+          } else {
+            Navigator.pushReplacementNamed(context, AppRoutes.homeScreen);
+          }
+          return;
+      }
+    }
+
     switch (targetIndex) {
       case 0:
         Navigator.pushReplacementNamed(context, AppRoutes.profileScreen);
