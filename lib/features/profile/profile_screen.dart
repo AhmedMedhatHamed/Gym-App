@@ -81,6 +81,9 @@ class ProfileScreen extends StatelessWidget {
                             SizedBox(height: 22.0 * scale),
                             ProfileInfoCard(
                               scale: scale,
+                              name: profile.userName.isNotEmpty
+                                  ? profile.userName
+                                  : 'كابتن',
                               imageBytes: profile.avatarBytes,
                               onAvatarTap: () {
                                 ProfileImagePickerSheet.show(

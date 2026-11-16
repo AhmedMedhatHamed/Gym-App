@@ -20,8 +20,12 @@ class ProfileCubit extends Cubit<ProfileState> {
                 HiveDataSource.getProfileImage() ?? profileImageNotifier.value,
             badges: profileBadges,
             workoutLogs: profileWorkoutLogs,
+            userName:
+                HiveDataSource.getUserName() ?? userNameNotifier.value,
           ),
-        );
+        ) {
+    loadUserData();
+  }
 
   final ImagePicker _imagePicker;
   final FirebaseDataSource _firebaseDataSource;
@@ -40,7 +44,19 @@ class ProfileCubit extends Cubit<ProfileState> {
           HiveDataSource.getProfileImage() ?? profileImageNotifier.value,
       badges: profileBadges,
       workoutLogs: profileWorkoutLogs,
+      userName: HiveDataSource.getUserName() ?? userNameNotifier.value,
     );
+  }
+
+  Future<void> loadUserData() async {
+    try {
+      final user = await _firebaseDataSource.getUserData();
+      if (user != null && user.name.isNotEmpty) {
+        await HiveDataSource.saveUserName(user.name);
+        userNameNotifier.value = user.name;
+        emit(_currentState.copyWith(userName: user.name));
+      }
+    } catch (_) {}
   }
 
   void selectBadge(int index) {

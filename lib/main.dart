@@ -15,6 +15,7 @@ void main() async {
 
   await HiveDataSource.init();
   profileImageNotifier.value = HiveDataSource.getProfileImage();
+  userNameNotifier.value = HiveDataSource.getUserName() ?? '';
 
   runApp(const MyApp());
 }

@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 final ValueNotifier<Uint8List?> profileImageNotifier =
     ValueNotifier<Uint8List?>(null);
 
+final ValueNotifier<String> userNameNotifier = ValueNotifier<String>('');
+
 class ProfileBadgeModel {
   final String title;
   final String emoji;

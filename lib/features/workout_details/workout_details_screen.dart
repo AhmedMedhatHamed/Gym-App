@@ -13,10 +13,7 @@ import 'package:gym_app/features/workout_details/widgets/workout_video_preview.d
 import 'package:material_ui/material_ui.dart';
 
 class WorkoutDetailsScreen extends StatefulWidget {
-  const WorkoutDetailsScreen({
-    super.key,
-    this.workout = chestDumbbellWorkout,
-  });
+  const WorkoutDetailsScreen({super.key, this.workout = chestDumbbellWorkout});
 
   final WorkoutDetailsModel workout;
 
@@ -40,7 +37,6 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
   void _onPlayPausePressed(int index) {
     final exercise = widget.workout.exercises[index];
 
-    // Already resting on this exercise → cancel rest and return to play.
     if (pausedExerciseIndex == index) {
       _stopRestTimer();
       setState(() {
@@ -51,13 +47,11 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
       return;
     }
 
-    // Selected / playing → press pause starts a 60sec rest timer.
     if (selectedExerciseIndex == index && pausedExerciseIndex == null) {
       _startRestTimer(index, exercise.restSeconds);
       return;
     }
 
-    // Select a new exercise (show pause icon when active).
     _stopRestTimer();
     setState(() {
       selectedExerciseIndex = index;
@@ -163,10 +157,7 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
                     ],
                   ),
                 ),
-                CustomButton(
-                  text: 'ابدأ التمرين الآن',
-                  onPressed: () {},
-                ),
+                CustomButton(text: 'ابدأ التمرين الآن', onPressed: () {}),
                 const SizedBox(height: 12.0),
               ],
             ),
