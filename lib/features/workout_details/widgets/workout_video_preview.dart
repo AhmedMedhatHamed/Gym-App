@@ -15,12 +15,13 @@ class WorkoutVideoPreview extends StatefulWidget {
   final VoidCallback? onPlayPressed;
 
   @override
-  State<WorkoutVideoPreview> createState() => _WorkoutVideoPreviewState();
+  State<WorkoutVideoPreview> createState() => WorkoutVideoPreviewState();
 }
 
-class _WorkoutVideoPreviewState extends State<WorkoutVideoPreview> {
+class WorkoutVideoPreviewState extends State<WorkoutVideoPreview> {
   VideoPlayerController? _controller;
   bool _hasError = false;
+  bool _pendingPlay = false;
 
   @override
   void initState() {
@@ -34,6 +35,7 @@ class _WorkoutVideoPreviewState extends State<WorkoutVideoPreview> {
     if (oldWidget.videoPath != widget.videoPath) {
       _disposeController();
       _hasError = false;
+      _pendingPlay = false;
       _initController();
     }
   }
@@ -51,12 +53,17 @@ class _WorkoutVideoPreviewState extends State<WorkoutVideoPreview> {
     controller.addListener(_onControllerUpdated);
     controller.initialize().then((_) {
       if (mounted && _controller == controller) {
+        if (_pendingPlay) {
+          _pendingPlay = false;
+          controller.play();
+        }
         setState(() {});
       }
     }).catchError((_) {
       if (mounted && _controller == controller) {
         setState(() {
           _hasError = true;
+          _pendingPlay = false;
         });
       }
     });
@@ -71,6 +78,29 @@ class _WorkoutVideoPreviewState extends State<WorkoutVideoPreview> {
   void _onControllerUpdated() {
     if (mounted) {
       setState(() {});
+    }
+  }
+
+  void playVideo() {
+    final controller = _controller;
+    if (controller != null && controller.value.isInitialized && !_hasError) {
+      if (!controller.value.isPlaying) {
+        controller.play();
+        setState(() {});
+      }
+    } else {
+      _pendingPlay = true;
+    }
+  }
+
+  void pauseVideo() {
+    _pendingPlay = false;
+    final controller = _controller;
+    if (controller != null && controller.value.isInitialized && !_hasError) {
+      if (controller.value.isPlaying) {
+        controller.pause();
+        setState(() {});
+      }
     }
   }
 
