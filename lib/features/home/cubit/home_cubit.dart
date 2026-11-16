@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gym_app/core/datasource/firebase_data_source.dart';
 import 'package:gym_app/core/datasource/hive_data_source.dart';
+import 'package:gym_app/core/services/step_tracking_service.dart';
 import 'package:gym_app/features/home/model/workout_program_model.dart';
 import 'package:gym_app/features/profile/model/profile_model.dart';
 import 'package:material_ui/material_ui.dart';
@@ -35,6 +36,7 @@ class HomeCubit extends Cubit<HomeState> {
   void initHome() {
     _emitLoadedState();
     loadUserData();
+    StepTrackingService.instance.init();
   }
 
   Future<void> loadUserData() async {

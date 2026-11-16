@@ -11,6 +11,9 @@ class HiveDataSource {
   static const String workoutLogsKey = 'workout_logs';
   static const String burnedCaloriesKey = 'burned_calories';
   static const String workoutMinutesKey = 'workout_minutes';
+  static const String todayStepsKey = 'today_steps';
+  static const String stepBaseKey = 'step_base';
+  static const String stepDateKey = 'step_date';
 
   static Future<void> init() async {
     await Hive.initFlutter();
@@ -130,5 +133,44 @@ class HiveDataSource {
     dynamic data = _profileBox.get(_activeKeyFor(workoutMinutesKey));
     data ??= _profileBox.get(workoutMinutesKey);
     return (data as num?)?.toInt() ?? 0;
+  }
+
+  static int getTodaySteps() {
+    if (!Hive.isBoxOpen(profileBoxName)) return 0;
+    dynamic data = _profileBox.get(_activeKeyFor(todayStepsKey));
+    data ??= _profileBox.get(todayStepsKey);
+    return (data as num?)?.toInt() ?? 0;
+  }
+
+  static Future<void> saveTodaySteps(int steps) async {
+    final key = _activeKeyFor(todayStepsKey);
+    await _profileBox.put(key, steps);
+    await _profileBox.put(todayStepsKey, steps);
+  }
+
+  static String? getStepDate() {
+    if (!Hive.isBoxOpen(profileBoxName)) return null;
+    dynamic data = _profileBox.get(_activeKeyFor(stepDateKey));
+    data ??= _profileBox.get(stepDateKey);
+    return data as String?;
+  }
+
+  static Future<void> saveStepDate(String date) async {
+    final key = _activeKeyFor(stepDateKey);
+    await _profileBox.put(key, date);
+    await _profileBox.put(stepDateKey, date);
+  }
+
+  static int? getStepBase() {
+    if (!Hive.isBoxOpen(profileBoxName)) return null;
+    dynamic data = _profileBox.get(_activeKeyFor(stepBaseKey));
+    data ??= _profileBox.get(stepBaseKey);
+    return (data as num?)?.toInt();
+  }
+
+  static Future<void> saveStepBase(int base) async {
+    final key = _activeKeyFor(stepBaseKey);
+    await _profileBox.put(key, base);
+    await _profileBox.put(stepBaseKey, base);
   }
 }

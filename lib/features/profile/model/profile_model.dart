@@ -14,6 +14,8 @@ final ValueNotifier<int> burnedCaloriesNotifier = ValueNotifier<int>(0);
 
 final ValueNotifier<int> workoutMinutesNotifier = ValueNotifier<int>(0);
 
+final ValueNotifier<int> todayStepsNotifier = ValueNotifier<int>(0);
+
 class ProfileBadgeModel {
   final String title;
   final String emoji;

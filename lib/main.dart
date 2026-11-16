@@ -19,6 +19,7 @@ void main() async {
   workoutLogsNotifier.value = HiveDataSource.getWorkoutLogs();
   burnedCaloriesNotifier.value = HiveDataSource.getBurnedCalories();
   workoutMinutesNotifier.value = HiveDataSource.getWorkoutMinutes();
+  todayStepsNotifier.value = HiveDataSource.getTodaySteps();
 
   runApp(const MyApp());
 }

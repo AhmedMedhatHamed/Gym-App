@@ -31,13 +31,24 @@ class DailyActivitySection extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 12.0),
-            const Expanded(
-              child: ActivityProgressCard(
-                value: '8,420',
-                progress: 0.842,
-                progressColor: AppColors.cyanColor,
-                title: 'عدد الخطوات',
-                subtitle: 'الهدف: 10,000',
+            Expanded(
+              child: ValueListenableBuilder<int>(
+                valueListenable: todayStepsNotifier,
+                builder: (context, steps, _) {
+                  const int goal = 10000;
+                  final double stepProgress = (steps / goal).clamp(0.0, 1.0);
+                  final String formattedSteps = steps >= 1000
+                      ? '${(steps ~/ 1000)},${(steps % 1000).toString().padLeft(3, '0')}'
+                      : '$steps';
+
+                  return ActivityProgressCard(
+                    value: formattedSteps,
+                    progress: stepProgress,
+                    progressColor: AppColors.cyanColor,
+                    title: 'عدد الخطوات',
+                    subtitle: 'الهدف: 10,000',
+                  );
+                },
               ),
             ),
           ],
