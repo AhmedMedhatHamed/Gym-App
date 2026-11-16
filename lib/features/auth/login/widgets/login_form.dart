@@ -1,12 +1,14 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:gym_app/core/datasource/hive_data_source.dart';
+import 'package:gym_app/core/routes/app_routes.dart';
 import 'package:gym_app/core/utils/app_colors.dart';
 import 'package:gym_app/core/utils/app_styles.dart';
 import 'package:gym_app/core/utils/validators.dart';
 import 'package:gym_app/core/widgets/custom_button.dart';
-import 'package:gym_app/core/routes/app_routes.dart';
 import 'package:gym_app/features/auth/login/cubit/login_cubit.dart';
 import 'package:gym_app/features/auth/widgets/custom_text_field.dart';
+import 'package:gym_app/features/profile/model/profile_model.dart';
+import 'package:material_ui/material_ui.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -34,6 +36,7 @@ class _LoginFormState extends State<LoginForm> {
     return BlocConsumer<LoginCubit, LoginState>(
       listener: (context, state) {
         if (state is LoginSuccess) {
+          profileImageNotifier.value = HiveDataSource.getProfileImage();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('تم تسجيل الدخول بنجاح')),
           );

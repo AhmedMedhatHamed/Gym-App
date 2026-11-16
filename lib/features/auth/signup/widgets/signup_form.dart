@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gym_app/core/datasource/hive_data_source.dart';
 import 'package:gym_app/core/routes/app_routes.dart';
 import 'package:gym_app/core/utils/app_colors.dart';
 import 'package:gym_app/core/utils/app_styles.dart';
@@ -6,6 +7,7 @@ import 'package:gym_app/core/utils/validators.dart';
 import 'package:gym_app/core/widgets/custom_button.dart';
 import 'package:gym_app/features/auth/signup/cubit/signup_cubit.dart';
 import 'package:gym_app/features/auth/widgets/custom_text_field.dart';
+import 'package:gym_app/features/profile/model/profile_model.dart';
 import 'package:material_ui/material_ui.dart';
 
 class SignupForm extends StatefulWidget {
@@ -39,6 +41,7 @@ class _SignupFormState extends State<SignupForm> {
     return BlocConsumer<SignupCubit, SignupState>(
       listener: (context, state) {
         if (state is SignupSuccess) {
+          profileImageNotifier.value = HiveDataSource.getProfileImage();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Account created successfully')),
           );

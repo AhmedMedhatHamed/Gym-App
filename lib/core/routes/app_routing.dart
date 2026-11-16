@@ -6,9 +6,11 @@ import 'package:gym_app/features/auth/login/cubit/login_cubit.dart';
 import 'package:gym_app/features/auth/login/login_screen.dart';
 import 'package:gym_app/features/auth/signup/cubit/signup_cubit.dart';
 import 'package:gym_app/features/auth/signup/signup_screen.dart';
+import 'package:gym_app/features/home/cubit/home_cubit.dart';
 import 'package:gym_app/features/home/home_screen.dart';
 import 'package:gym_app/features/home/model/workout_program_model.dart';
 import 'package:gym_app/features/onboarding/onboarding_screen.dart';
+import 'package:gym_app/features/profile/cubit/profile_cubit.dart';
 import 'package:gym_app/features/profile/profile_screen.dart';
 import 'package:gym_app/features/splash/splash_screen.dart';
 import 'package:gym_app/features/statistics/statistics_screen.dart';
@@ -50,7 +52,12 @@ class AppRouter {
         );
 
       case AppRoutes.homeScreen:
-        return MaterialPageRoute(builder: (_) => const HomeScreen());
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (context) => HomeCubit(),
+            child: const HomeScreen(),
+          ),
+        );
 
       case AppRoutes.workoutDetailsScreen:
         final args = settings.arguments;
@@ -64,7 +71,12 @@ class AppRouter {
         );
 
       case AppRoutes.profileScreen:
-        return MaterialPageRoute(builder: (_) => const ProfileScreen());
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (context) => ProfileCubit(),
+            child: const ProfileScreen(),
+          ),
+        );
 
       case AppRoutes.statisticsScreen:
         return MaterialPageRoute(builder: (_) => const StatisticsScreen());
