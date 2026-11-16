@@ -13,7 +13,10 @@ import 'package:gym_app/features/workout_details/widgets/workout_video_preview.d
 import 'package:material_ui/material_ui.dart';
 
 class WorkoutDetailsScreen extends StatefulWidget {
-  const WorkoutDetailsScreen({super.key, this.workout = chestDumbbellWorkout});
+  const WorkoutDetailsScreen({
+    super.key,
+    this.workout = chestDumbbellWorkout,
+  });
 
   final WorkoutDetailsModel workout;
 
@@ -23,6 +26,8 @@ class WorkoutDetailsScreen extends StatefulWidget {
 
 class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
   static const int currentNavIndex = 2;
+  final GlobalKey<WorkoutVideoPreviewState> _videoKey =
+      GlobalKey<WorkoutVideoPreviewState>();
   int? selectedExerciseIndex;
   int? pausedExerciseIndex;
   int remainingSeconds = 0;
@@ -37,8 +42,10 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
   void _onPlayPausePressed(int index) {
     final exercise = widget.workout.exercises[index];
 
+    // Already resting on this exercise → cancel rest and return to play.
     if (pausedExerciseIndex == index) {
       _stopRestTimer();
+      _videoKey.currentState?.playVideo();
       setState(() {
         pausedExerciseIndex = null;
         remainingSeconds = 0;
@@ -47,12 +54,16 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
       return;
     }
 
+    // Selected / playing → press pause starts a 60sec rest timer.
     if (selectedExerciseIndex == index && pausedExerciseIndex == null) {
+      _videoKey.currentState?.pauseVideo();
       _startRestTimer(index, exercise.restSeconds);
       return;
     }
 
+    // Select a new exercise (show pause icon when active).
     _stopRestTimer();
+    _videoKey.currentState?.playVideo();
     setState(() {
       selectedExerciseIndex = index;
       pausedExerciseIndex = null;
@@ -70,6 +81,7 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
     _restTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (remainingSeconds <= 1) {
         timer.cancel();
+        _videoKey.currentState?.playVideo();
         setState(() {
           pausedExerciseIndex = null;
           remainingSeconds = 0;
@@ -87,6 +99,61 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
   void _stopRestTimer() {
     _restTimer?.cancel();
     _restTimer = null;
+  }
+
+  String _getButtonText(int totalExercises) {
+    final int? activeIndex = selectedExerciseIndex ?? pausedExerciseIndex;
+    if (activeIndex == null || totalExercises == 0) {
+      return 'ابدأ التمرين الآن';
+    }
+    if (activeIndex < totalExercises - 1) {
+      return 'التمرين التالي (${activeIndex + 2}/$totalExercises)';
+    }
+    return 'إنهاء التمرين';
+  }
+
+  void _onMainActionPressed() {
+    final exercises = widget.workout.exercises;
+    if (exercises.isEmpty) return;
+
+    final int? activeIndex = selectedExerciseIndex ?? pausedExerciseIndex;
+    if (activeIndex == null || activeIndex < exercises.length - 1) {
+      final int nextIndex = activeIndex == null ? 0 : activeIndex + 1;
+      _stopRestTimer();
+      _videoKey.currentState?.playVideo();
+      setState(() {
+        selectedExerciseIndex = nextIndex;
+        pausedExerciseIndex = null;
+        remainingSeconds = 0;
+      });
+      return;
+    }
+
+    _stopRestTimer();
+    _videoKey.currentState?.pauseVideo();
+    setState(() {
+      selectedExerciseIndex = null;
+      pausedExerciseIndex = null;
+      remainingSeconds = 0;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: AppColors.cardColor,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14.0),
+          side: const BorderSide(color: AppColors.primaryColor, width: 1.0),
+        ),
+        content: Text(
+          'عاش يا بطل! أتممت ${widget.workout.title} وحرقت ${widget.workout.calories} سعرة حرارية 🔥',
+          textDirection: TextDirection.rtl,
+          style: AppStyles.noto700Size16.copyWith(
+            fontSize: 13.0,
+            color: AppColors.white,
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -111,10 +178,13 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
                     slivers: [
                       SliverToBoxAdapter(
                         child: WorkoutVideoPreview(
+                          key: _videoKey,
                           videoPath: workout.videoPath,
                           imagePath: coverImage,
                           onPlayPressed: () {
-                            if (workout.exercises.isNotEmpty) {
+                            if (selectedExerciseIndex == null &&
+                                pausedExerciseIndex == null &&
+                                workout.exercises.isNotEmpty) {
                               _onPlayPausePressed(0);
                             }
                           },
@@ -157,7 +227,10 @@ class _WorkoutDetailsScreenState extends State<WorkoutDetailsScreen> {
                     ],
                   ),
                 ),
-                CustomButton(text: 'ابدأ التمرين الآن', onPressed: () {}),
+                CustomButton(
+                  text: _getButtonText(workout.exercises.length),
+                  onPressed: _onMainActionPressed,
+                ),
                 const SizedBox(height: 12.0),
               ],
             ),
